@@ -1,10 +1,11 @@
-#include "basicCall.h"
+#include "curlGet.h"
 
-//MUST use http:// or https:// at the start of address arg
+//sometimes have to use http:// or https:// in the url
+//or the ip address of the url
 int main(int argc, char* argv[]) {
     DataStr* dataStr = initDataStr();
-    char* httpAddress = parseAddress(argc, argv);
-    CURL* curl = initCurl(httpAddress, dataStr);
+    char* address = parseAddress(argc, argv);
+    CURL* curl = initCurl(address, dataStr);
     CURLcode code = curl_easy_perform(curl);
     if (code != CURLE_OK) {
         fatalError("Curl code error: %s\n", curl_easy_strerror(code));
@@ -50,6 +51,7 @@ CURL* initCurl(char* httpAddress, DataStr* dataStr) {
         fatalError("curl failed to init");
     }
     curl_easy_setopt(curl, CURLOPT_URL, httpAddress);
+    // Can ommit these two set options and it will print to the terminal anyway, but good to know how to store the returned data
     //sets the callback that will be called as many times as is required to write all data
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunc);
     //will pass the dataStr pointer into the writeFunc callback
